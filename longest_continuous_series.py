@@ -10,38 +10,47 @@ def main():
 
 def longest_continuous_series(array):
     i = 0
-    series_1 = [array[0]]
-    series_2 = []
+    series_1_start_index = 0
+    series_1_len = 1
+    series_2_len = 0
 
     while i < (len(array) - 1):
         if array[i + 1] == (array[i] + 1):
-            if array[i] in series_1:
-                series_1.append(array[i + 1])
-                l1 = len(series_1)
-            elif array[i] in series_2:
-                series_2.append(array[i + 1])
-                l2 = len(series_2)
+            if (i + 1 == series_1_start_index + series_1_len):
+                series_1_len += 1
+            else:
+                series_2_len += 1
         elif array[i + 1] != (array[i] + 1):
-            if series_2 == []:
-                series_2.append(array[i + 1])
-                l2 = len(series_2)
-            elif l2 > l1:
-                series_1 = series_2
-                l1 = len(series_1)
-                series_2 = []
-                series_2.append(array[i + 1])
-                l2 = len(series_2)
-            elif l1 > l2:
-                series_2 = []
-                series_2.append(array[i + 1])
-                l2 = len(series_2)
+            if series_2_len == 0:
+                series_2_start_index = i + 1
+                series_2_len += 1
+            elif series_2_len > series_1_len:
+                series_1_start_index = series_2_start_index
+                series_1_len = series_2_len
+                series_2_start_index = i + 1
+                series_2_len = 1
+            elif series_1_len > series_2_len:
+                series_2_start_index = i + 1
+                series_2_len = 1
         i += 1
     
-    if l1 > l2:
-        longest_continuous_series = series_1
-    elif l2 > l1:
-        longest_continuous_series = series_2
-    
+    if series_1_len > series_2_len:
+        longest_continuous_series_start_index = series_1_start_index
+        longest_continuous_series_len = series_1_len
+    elif series_2_len > series_1_len:
+        longest_continuous_series_start_index = series_2_start_index
+        longest_continuous_series_len = series_2_len
+    elif series_1_len == series_2_len:
+        print "There are 2 longest series of the same length. Printing one of them:"
+        longest_continuous_series_start_index = series_1_start_index
+        longest_continuous_series_len = series_1_len
+
+    longest_continuous_series = []
+    s = 0
+    while s < longest_continuous_series_len:
+        longest_continuous_series.append(array[longest_continuous_series_start_index + s])
+        s += 1
+
     return longest_continuous_series
 
 
